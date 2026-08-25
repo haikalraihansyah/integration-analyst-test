@@ -1,0 +1,1882 @@
+{
+  "info": {
+    "name": "PT XYZ - Online Lending Integration API",
+    "description": "Sample Postman Collection for Integration Analyst take-home test. Illustrative API contracts; align final fields with actual provider/Core Banking specifications.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.example.com"
+    },
+    {
+      "key": "token",
+      "value": "sample-access-token"
+    },
+    {
+      "key": "customerId",
+      "value": "CUST-0001"
+    },
+    {
+      "key": "applicationId",
+      "value": "APP-0001"
+    },
+    {
+      "key": "kycVerificationId",
+      "value": "KYC-0001"
+    },
+    {
+      "key": "loanId",
+      "value": "LOAN-0001"
+    },
+    {
+      "key": "disbursementId",
+      "value": "DISB-0001"
+    },
+    {
+      "key": "correlationId",
+      "value": "CORR-0001"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/login",
+        "description": "Authenticate customer.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"customer@example.com\",\n  \"password\": \"Password123!\",\n  \"deviceId\": \"DEVICE-001\",\n  \"channel\": \"MOBILE\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "description": "Authenticate customer.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"customer@example.com\",\n  \"password\": \"Password123!\",\n  \"deviceId\": \"DEVICE-001\",\n  \"channel\": \"MOBILE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"accessToken\": \"sample-access-token\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 3600,\n    \"customerId\": \"CUST-0001\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "02 Get KYC Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/customers/{{customerId}}/kyc-status",
+        "description": "Check whether customer already has valid KYC."
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/customers/{{customerId}}/kyc-status",
+            "description": "Check whether customer already has valid KYC."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"customerId\": \"CUST-0001\",\n    \"kycStatus\": \"VERIFIED\",\n    \"verificationId\": \"KYC-0001\",\n    \"verifiedAt\": \"2026-08-25T15:00:00+07:00\",\n    \"expiresAt\": \"2027-08-25T15:00:00+07:00\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "03 OCR Identity",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/ocr/identity",
+        "description": "Extract KTP/passport/SIM attributes.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": \"{{customerId}\",\n  \"documentType\": \"KTP\",\n  \"documentImageBase64\": \"<base64>\",\n  \"documentSide\": \"FRONT\",\n  \"requestReference\": \"OCR-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/ocr/identity",
+            "description": "Extract KTP/passport/SIM attributes.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}\",\n  \"documentType\": \"KTP\",\n  \"documentImageBase64\": \"<base64>\",\n  \"documentSide\": \"FRONT\",\n  \"requestReference\": \"OCR-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"OCR-0001\",\n    \"documentNumber\": \"317XXXXXXXXXXXXX\",\n    \"name\": \"SAMPLE CUSTOMER\",\n    \"birthPlace\": \"JAKARTA\",\n    \"birthDate\": \"1995-05-10\",\n    \"confidenceScore\": 0.98\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "04 Dukcapil Identity Match",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/dukcapil/identity-match",
+        "description": "Match NIK, name, place/date of birth.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"DUK-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"birthPlace\": \"JAKARTA\",\n  \"birthDate\": \"1995-05-10\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/dukcapil/identity-match",
+            "description": "Match NIK, name, place/date of birth.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"DUK-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"birthPlace\": \"JAKARTA\",\n  \"birthDate\": \"1995-05-10\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"DUK-0001\",\n    \"matchStatus\": \"MATCH\",\n    \"matchScore\": 0.99,\n    \"matchedFields\": [\n      \"NIK\",\n      \"NAME\",\n      \"BIRTH_PLACE\",\n      \"BIRTH_DATE\"\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "05 e-KTP Status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/dukcapil/identity-status",
+        "description": "Check active/blocked/duplicate/deceased status.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"KTP-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/dukcapil/identity-status",
+            "description": "Check active/blocked/duplicate/deceased status.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"KTP-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"KTP-0001\",\n    \"identityStatus\": \"ACTIVE\",\n    \"isBlocked\": false,\n    \"isDuplicate\": false,\n    \"isDeceased\": false\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "06 Liveness Detection",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/biometric/liveness",
+        "description": "Detect live human / anti-spoofing.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"sessionId\": \"LIVE-0001\",\n  \"faceImageBase64\": \"<base64-selfie>\",\n  \"challenge\": \"BLINK\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/biometric/liveness",
+            "description": "Detect live human / anti-spoofing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"sessionId\": \"LIVE-0001\",\n  \"faceImageBase64\": \"<base64-selfie>\",\n  \"challenge\": \"BLINK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"LIVE-0001\",\n    \"livenessStatus\": \"LIVE\",\n    \"livenessScore\": 0.97\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "07 Dukcapil Face Match",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/dukcapil/face-match",
+        "description": "Face match against registered biometric.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"FACE-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"faceImageBase64\": \"<base64-selfie>\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/dukcapil/face-match",
+            "description": "Face match against registered biometric.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"FACE-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"faceImageBase64\": \"<base64-selfie>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"FACE-0001\",\n    \"matchStatus\": \"MATCH\",\n    \"faceMatchScore\": 0.96\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "08 BPJS Employment Validation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/bpjs/employment-validation",
+        "description": "Validate membership, employer, employment duration and reported salary.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"BPJS-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"bpjsMembershipNumber\": \"BPJS-XXXX\",\n  \"consentReference\": \"CONSENT-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/bpjs/employment-validation",
+            "description": "Validate membership, employer, employment duration and reported salary.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"BPJS-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"bpjsMembershipNumber\": \"BPJS-XXXX\",\n  \"consentReference\": \"CONSENT-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"BPJS-0001\",\n    \"membershipStatus\": \"ACTIVE\",\n    \"employerName\": \"PT SAMPLE INDONESIA\",\n    \"employmentDurationMonths\": 36,\n    \"reportedMonthlySalary\": 12000000\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "09 SLIK Credit Information",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/slik/credit-information",
+        "description": "Retrieve credit facilities/outstanding/collectibility.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"SLIK-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"consentReference\": \"CONSENT-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/slik/credit-information",
+            "description": "Retrieve credit facilities/outstanding/collectibility.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"SLIK-0001\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"consentReference\": \"CONSENT-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"SLIK-0001\",\n    \"collectibility\": \"1\",\n    \"activeFacilities\": 1,\n    \"totalOutstanding\": 5000000,\n    \"hasDelinquency\": false\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "10 DTTOT Screening",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/compliance/dttot-screening",
+        "description": "Screen against terrorist/watchlist data.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"DTTOT-0001\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"dateOfBirth\": \"1995-05-10\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/compliance/dttot-screening",
+            "description": "Screen against terrorist/watchlist data.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"DTTOT-0001\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"dateOfBirth\": \"1995-05-10\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"screeningId\": \"DTTOT-0001\",\n    \"screeningStatus\": \"CLEAR\",\n    \"matchIndicator\": false\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "11 PEP Screening",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/compliance/pep-screening",
+        "description": "PEP screening.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"PEP-0001\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"dateOfBirth\": \"1995-05-10\",\n  \"country\": \"ID\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/compliance/pep-screening",
+            "description": "PEP screening.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"PEP-0001\",\n  \"name\": \"SAMPLE CUSTOMER\",\n  \"dateOfBirth\": \"1995-05-10\",\n  \"country\": \"ID\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"screeningId\": \"PEP-0001\",\n    \"screeningStatus\": \"CLEAR\",\n    \"matchIndicator\": false\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "12 NPWP Validation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/djp/npwp-validation",
+        "description": "Validate NPWP and owner matching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"NPWP-0001\",\n  \"npwp\": \"12.345.678.9-012.345\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"name\": \"SAMPLE CUSTOMER\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/djp/npwp-validation",
+            "description": "Validate NPWP and owner matching.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"NPWP-0001\",\n  \"npwp\": \"12.345.678.9-012.345\",\n  \"nik\": \"317XXXXXXXXXXXXX\",\n  \"name\": \"SAMPLE CUSTOMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"NPWP-0001\",\n    \"isValid\": true,\n    \"matchedName\": \"SAMPLE CUSTOMER\",\n    \"matchStatus\": \"MATCH\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "13 Bank Account Validation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/external/bank-account/validate",
+        "description": "Validate destination account before disbursement.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestReference\": \"BANK-0001\",\n  \"bankCode\": \"008\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"SAMPLE CUSTOMER\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/external/bank-account/validate",
+            "description": "Validate destination account before disbursement.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestReference\": \"BANK-0001\",\n  \"bankCode\": \"008\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"SAMPLE CUSTOMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"verificationId\": \"BANK-0001\",\n    \"isValid\": true,\n    \"accountStatus\": \"ACTIVE\",\n    \"accountName\": \"SAMPLE CUSTOMER\",\n    \"nameMatchStatus\": \"MATCH\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "14 Submit KYC",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/kyc",
+        "description": "Aggregate KYC checks.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"KTP\",\n  \"documentNumber\": \"317XXXXXXXXXXXXX\",\n  \"ocrVerificationId\": \"OCR-0001\",\n  \"identityVerificationId\": \"DUK-0001\",\n  \"identityStatusVerificationId\": \"KTP-0001\",\n  \"livenessVerificationId\": \"LIVE-0001\",\n  \"faceMatchVerificationId\": \"FACE-0001\",\n  \"dttotScreeningId\": \"DTTOT-0001\",\n  \"pepScreeningId\": \"PEP-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kyc",
+            "description": "Aggregate KYC checks.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"KTP\",\n  \"documentNumber\": \"317XXXXXXXXXXXXX\",\n  \"ocrVerificationId\": \"OCR-0001\",\n  \"identityVerificationId\": \"DUK-0001\",\n  \"identityStatusVerificationId\": \"KTP-0001\",\n  \"livenessVerificationId\": \"LIVE-0001\",\n  \"faceMatchVerificationId\": \"FACE-0001\",\n  \"dttotScreeningId\": \"DTTOT-0001\",\n  \"pepScreeningId\": \"PEP-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"kycVerificationId\": \"KYC-0001\",\n    \"kycStatus\": \"VERIFIED\",\n    \"verificationSummary\": {\n      \"identity\": \"MATCH\",\n      \"ktpStatus\": \"ACTIVE\",\n      \"liveness\": \"LIVE\",\n      \"faceMatch\": \"MATCH\",\n      \"dttot\": \"CLEAR\",\n      \"pep\": \"CLEAR\"\n    }\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "15 Create Loan Application",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loan-applications",
+        "description": "Create loan application after valid KYC.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"productCode\": \"PERSONAL_LOAN\",\n  \"requestedAmount\": 25000000,\n  \"requestedTenor\": 12,\n  \"loanPurpose\": \"CONSUMPTIVE\",\n  \"monthlyIncome\": 12000000,\n  \"monthlyExpense\": 5000000,\n  \"employmentStatus\": \"EMPLOYEE\",\n  \"employerName\": \"PT SAMPLE INDONESIA\",\n  \"employmentDurationMonths\": 36,\n  \"phoneNumber\": \"62812XXXXXXX\",\n  \"email\": \"customer@example.com\",\n  \"address\": {\n    \"province\": \"DKI JAKARTA\",\n    \"city\": \"JAKARTA SELATAN\",\n    \"postalCode\": \"12XXX\"\n  },\n  \"kycVerificationId\": \"{{kycVerificationId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loan-applications",
+            "description": "Create loan application after valid KYC.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"productCode\": \"PERSONAL_LOAN\",\n  \"requestedAmount\": 25000000,\n  \"requestedTenor\": 12,\n  \"loanPurpose\": \"CONSUMPTIVE\",\n  \"monthlyIncome\": 12000000,\n  \"monthlyExpense\": 5000000,\n  \"employmentStatus\": \"EMPLOYEE\",\n  \"employerName\": \"PT SAMPLE INDONESIA\",\n  \"employmentDurationMonths\": 36,\n  \"phoneNumber\": \"62812XXXXXXX\",\n  \"email\": \"customer@example.com\",\n  \"address\": {\n    \"province\": \"DKI JAKARTA\",\n    \"city\": \"JAKARTA SELATAN\",\n    \"postalCode\": \"12XXX\"\n  },\n  \"kycVerificationId\": \"{{kycVerificationId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"applicationId\": \"APP-0001\",\n    \"applicationStatus\": \"SUBMITTED\",\n    \"nextStatus\": \"WAITING_MANUAL_REVIEW\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "16 Run Loan Verification",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/verification",
+        "description": "SOA orchestration trigger for credit/employment/compliance checks.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"verificationTypes\": [\n    \"BPJS\",\n    \"SLIK\",\n    \"NPWP\",\n    \"DTTOT\",\n    \"PEP\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/verification",
+            "description": "SOA orchestration trigger for credit/employment/compliance checks.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"verificationTypes\": [\n    \"BPJS\",\n    \"SLIK\",\n    \"NPWP\",\n    \"DTTOT\",\n    \"PEP\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"applicationId\": \"APP-0001\",\n    \"verificationStatus\": \"COMPLETED\",\n    \"verificationResult\": \"PASS\",\n    \"checks\": {\n      \"bpjs\": \"PASS\",\n      \"slik\": \"PASS\",\n      \"npwp\": \"PASS\",\n      \"dttot\": \"CLEAR\",\n      \"pep\": \"CLEAR\"\n    },\n    \"nextStatus\": \"WAITING_MANUAL_REVIEW\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "17 Get Loan Application",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}",
+        "description": "Get application status and verification summary."
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}",
+            "description": "Get application status and verification summary."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"applicationId\": \"APP-0001\",\n    \"applicationStatus\": \"WAITING_MANUAL_REVIEW\",\n    \"requestedAmount\": 25000000,\n    \"requestedTenor\": 12,\n    \"verificationStatus\": \"COMPLETED\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "18 Credit Analyst Decision",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/credit-decision",
+        "description": "Manual credit review and limit determination.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"decision\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenorMax\": 12,\n  \"interestRate\": 12.5,\n  \"reviewerId\": \"CA-001\",\n  \"remarks\": \"Approved based on credit review.\",\n  \"decisionReasonCode\": \"CRD-APPROVED\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/credit-decision",
+            "description": "Manual credit review and limit determination.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"decision\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenorMax\": 12,\n  \"interestRate\": 12.5,\n  \"reviewerId\": \"CA-001\",\n  \"remarks\": \"Approved based on credit review.\",\n  \"decisionReasonCode\": \"CRD-APPROVED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"applicationId\": \"APP-0001\",\n    \"decision\": \"APPROVED\",\n    \"approvedLimit\": 20000000,\n    \"approvedTenorMax\": 12,\n    \"decisionReference\": \"DEC-0001\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "19 Loan Booking",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loans",
+        "description": "Create loan after amount/tenor selection. SOA forwards to Core Banking.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"productCode\": \"PERSONAL_LOAN\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"purpose\": \"CONSUMPTIVE\",\n  \"firstDueDate\": \"2026-09-25\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loans",
+            "description": "Create loan after amount/tenor selection. SOA forwards to Core Banking.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"productCode\": \"PERSONAL_LOAN\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"purpose\": \"CONSUMPTIVE\",\n  \"firstDueDate\": \"2026-09-25\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"loanId\": \"LOAN-0001\",\n    \"loanStatus\": \"READY_FOR_DISBURSEMENT\",\n    \"loanAmount\": 15000000,\n    \"tenor\": 12,\n    \"coreBankingReference\": \"CB-BOOK-0001\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "20 Core Banking Loan Booking",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/integration/core-banking/loans",
+        "description": "Illustrative SOA-to-Core Banking adapter contract.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transactionReference\": \"CB-BOOK-0001\",\n  \"customerId\": \"{{customerId}}\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"currency\": \"IDR\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/integration/core-banking/loans",
+            "description": "Illustrative SOA-to-Core Banking adapter contract.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionReference\": \"CB-BOOK-0001\",\n  \"customerId\": \"{{customerId}}\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"currency\": \"IDR\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"coreBankingReference\": \"CB-BOOK-0001\",\n    \"loanAccountNumber\": \"01XXXXXXXXXX\",\n    \"bookingStatus\": \"BOOKED\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "21 Create Disbursement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/disbursements",
+        "description": "Create disbursement request after account validation.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"amount\": 15000000,\n  \"destinationBankCode\": \"008\",\n  \"destinationAccountNumber\": \"1234567890\",\n  \"destinationAccountName\": \"SAMPLE CUSTOMER\",\n  \"referenceId\": \"{{disbursementId}}\",\n  \"idempotencyKey\": \"IDEMP-DISB-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/disbursements",
+            "description": "Create disbursement request after account validation.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"amount\": 15000000,\n  \"destinationBankCode\": \"008\",\n  \"destinationAccountNumber\": \"1234567890\",\n  \"destinationAccountName\": \"SAMPLE CUSTOMER\",\n  \"referenceId\": \"{{disbursementId}}\",\n  \"idempotencyKey\": \"IDEMP-DISB-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"disbursementId\": \"DISB-0001\",\n    \"status\": \"PENDING\",\n    \"amount\": 15000000\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "22 Core Banking Disbursement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/integration/core-banking/disbursements",
+        "description": "SOA-to-Core Banking/payment processing disbursement interface.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transactionReference\": \"CB-DISB-0001\",\n  \"loanId\": \"{{loanId}}\",\n  \"amount\": 15000000,\n  \"destinationBankCode\": \"008\",\n  \"destinationAccountNumber\": \"1234567890\",\n  \"idempotencyKey\": \"IDEMP-DISB-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/integration/core-banking/disbursements",
+            "description": "SOA-to-Core Banking/payment processing disbursement interface.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionReference\": \"CB-DISB-0001\",\n  \"loanId\": \"{{loanId}}\",\n  \"amount\": 15000000,\n  \"destinationBankCode\": \"008\",\n  \"destinationAccountNumber\": \"1234567890\",\n  \"idempotencyKey\": \"IDEMP-DISB-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"transactionReference\": \"CB-DISB-0001\",\n    \"status\": \"PROCESSING\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "23 Disbursement Callback",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/disbursements/callback",
+        "description": "Inbound callback; must be authenticated and idempotent.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"transactionReference\": \"CB-DISB-0001\",\n  \"status\": \"SUCCESS\",\n  \"amount\": 15000000,\n  \"processedAt\": \"2026-08-25T16:30:00+07:00\",\n  \"externalReference\": \"BANK-TRX-001\",\n  \"failureCode\": null,\n  \"failureMessage\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/disbursements/callback",
+            "description": "Inbound callback; must be authenticated and idempotent.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"transactionReference\": \"CB-DISB-0001\",\n  \"status\": \"SUCCESS\",\n  \"amount\": 15000000,\n  \"processedAt\": \"2026-08-25T16:30:00+07:00\",\n  \"externalReference\": \"BANK-TRX-001\",\n  \"failureCode\": null,\n  \"failureMessage\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"disbursementId\": \"DISB-0001\",\n    \"status\": \"SUCCESS\",\n    \"externalReference\": \"BANK-TRX-001\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "24 Activate Loan",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loans/{{loanId}}/activate",
+        "description": "Activate only after successful disbursement.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"activationReference\": \"ACT-0001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loans/{{loanId}}/activate",
+            "description": "Activate only after successful disbursement.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"activationReference\": \"ACT-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"loanId\": \"LOAN-0001\",\n    \"loanStatus\": \"ACTIVE\",\n    \"activatedAt\": \"2026-08-25T16:35:00+07:00\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "25 Repayment Schedule",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{correlationId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/loans/{{loanId}}/repayment-schedule",
+        "description": "Create/synchronize repayment schedule.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"firstDueDate\": \"2026-09-25\",\n  \"scheduleType\": \"MONTHLY\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 Success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/loans/{{loanId}}/repayment-schedule",
+            "description": "Create/synchronize repayment schedule.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"firstDueDate\": \"2026-09-25\",\n  \"scheduleType\": \"MONTHLY\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"statusCode\": \"00\",\n  \"status\": \"SUCCESS\",\n  \"data\": {\n    \"loanId\": \"LOAN-0001\",\n    \"scheduleStatus\": \"CREATED\",\n    \"installmentCount\": 12,\n    \"firstDueDate\": \"2026-09-25\",\n    \"lastDueDate\": \"2027-08-25\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "99 - Technical Reference",
+      "item": [
+        {
+          "name": "Common Error - 400",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/example/400"
+          },
+          "response": [
+            {
+              "name": "400",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"statusCode\": \"400\",\n  \"status\": \"FAILED\",\n  \"message\": \"Validation error\",\n  \"errors\": [\n    {\n      \"field\": \"requestedAmount\",\n      \"code\": \"REQUIRED\",\n      \"message\": \"requestedAmount is required\"\n    }\n  ],\n  \"correlationId\": \"{{correlationId}\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Common Error - 409",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/example/409"
+          },
+          "response": [
+            {
+              "name": "409",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"statusCode\": \"409\",\n  \"status\": \"FAILED\",\n  \"message\": \"Transaction already processed\",\n  \"existingTransactionId\": \"TRX-001\",\n  \"correlationId\": \"{{correlationId}\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Common Error - 504",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/example/504"
+          },
+          "response": [
+            {
+              "name": "504",
+              "status": "Gateway Timeout",
+              "code": 504,
+              "body": "{\n  \"statusCode\": \"504\",\n  \"status\": \"FAILED\",\n  \"message\": \"External provider timeout\",\n  \"provider\": \"SLIK\",\n  \"retryable\": true,\n  \"correlationId\": \"{{correlationId}\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
