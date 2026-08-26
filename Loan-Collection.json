@@ -1,0 +1,1824 @@
+{
+  "info": {
+    "_postman_id": "66bad56f-9328-47af-b06b-22fbe311c7a6",
+    "name": "Online Loan Application & Disbursement - Core API",
+    "description": "Simulasi 6 core API + 1 callback untuk proses Online Loan Application & Disbursement: KYC Verification, Create Loan Application, Loan Assessment, Credit Decision, Loan Booking, Disbursement, dan Disbursement Callback.\n\nUrutan pemakaian:\n1. KYC Verification\n2. Create Loan Application\n3. Loan Assessment\n4. Credit Decision\n5. Loan Booking\n6. Disbursement\n7. Disbursement Callback\n\nSetiap request menyimpan ID hasil response ke Collection Variables secara otomatis (lihat tab Tests) sehingga request berikutnya bisa langsung dipakai berantai. Setiap request juga sudah memiliki Saved Example Response (klik dropdown response pada tiap request) sehingga bisa disimulasikan tanpa memanggil server sungguhan \u2014 gunakan Postman Mock Server dari collection ini jika ingin mensimulasikan endpoint secara penuh.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate correlation & request IDs for every call in this collection",
+          "pm.collectionVariables.set('correlationId', pm.variables.replaceIn('{{$guid}}'));",
+          "pm.collectionVariables.set('requestId', 'REQ-' + pm.variables.replaceIn('{{$timestamp}}'));"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.lender.example.com",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock-token",
+      "type": "string"
+    },
+    {
+      "key": "correlationId",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string"
+    },
+    {
+      "key": "requestId",
+      "value": "REQ-20260826-001",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "CUS-000123",
+      "type": "string"
+    },
+    {
+      "key": "kycVerificationId",
+      "value": "KYC-000123",
+      "type": "string"
+    },
+    {
+      "key": "applicationId",
+      "value": "APP-000123",
+      "type": "string"
+    },
+    {
+      "key": "assessmentId",
+      "value": "ASM-000123",
+      "type": "string"
+    },
+    {
+      "key": "loanId",
+      "value": "LN-000123",
+      "type": "string"
+    },
+    {
+      "key": "loanAccountNumber",
+      "value": "889900123456",
+      "type": "string"
+    },
+    {
+      "key": "disbursementId",
+      "value": "DISB-000123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - KYC & Onboarding",
+      "item": [
+        {
+          "name": "01 - KYC Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/kyc/verifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "kyc",
+                "verifications"
+              ]
+            },
+            "description": "Melakukan verifikasi identitas customer (OCR, Dukcapil, e-KTP, Liveness, Face Match, DTTOT, PEP) sebelum customer dapat mengajukan loan.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"KTP\",\n  \"documentNumber\": \"3171234567890001\",\n  \"fullName\": \"Budi Santoso\",\n  \"birthPlace\": \"Jakarta\",\n  \"birthDate\": \"1995-08-20\",\n  \"documentImageRef\": \"FILE-123456\",\n  \"faceImageRef\": \"FACE-123456\",\n  \"consentFlag\": true,\n  \"deviceId\": \"DEV-12345\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "01 - KYC Verification \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/kyc/verifications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyc",
+                    "verifications"
+                  ]
+                },
+                "description": "Melakukan verifikasi identitas customer (OCR, Dukcapil, e-KTP, Liveness, Face Match, DTTOT, PEP) sebelum customer dapat mengajukan loan.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"KTP\",\n  \"documentNumber\": \"3171234567890001\",\n  \"fullName\": \"Budi Santoso\",\n  \"birthPlace\": \"Jakarta\",\n  \"birthDate\": \"1995-08-20\",\n  \"documentImageRef\": \"FILE-123456\",\n  \"faceImageRef\": \"FACE-123456\",\n  \"consentFlag\": true,\n  \"deviceId\": \"DEV-12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"kycVerificationId\": \"KYC-000123\",\n    \"customerId\": \"{{customerId}}\",\n    \"kycStatus\": \"VERIFIED\",\n    \"identityMatchStatus\": \"MATCH\",\n    \"identityMatchScore\": 0.9985,\n    \"documentStatus\": \"ACTIVE\",\n    \"livenessStatus\": \"PASS\",\n    \"faceMatchStatus\": \"MATCH\",\n    \"faceMatchScore\": 0.9721,\n    \"dttotStatus\": \"CLEAR\",\n    \"pepStatus\": \"CLEAR\",\n    \"verifiedAt\": \"2026-08-26T10:15:00Z\",\n    \"referenceId\": \"KYC-REF-001\"\n  }\n}"
+            },
+            {
+              "name": "01 - KYC Verification \u2014 Rejected (Face Mismatch)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/kyc/verifications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyc",
+                    "verifications"
+                  ]
+                },
+                "description": "Melakukan verifikasi identitas customer (OCR, Dukcapil, e-KTP, Liveness, Face Match, DTTOT, PEP) sebelum customer dapat mengajukan loan.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"KTP\",\n  \"documentNumber\": \"3171234567890001\",\n  \"fullName\": \"Budi Santoso\",\n  \"birthPlace\": \"Jakarta\",\n  \"birthDate\": \"1995-08-20\",\n  \"documentImageRef\": \"FILE-123456\",\n  \"faceImageRef\": \"FACE-123456\",\n  \"consentFlag\": true,\n  \"deviceId\": \"DEV-12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"kycVerificationId\": \"KYC-000124\",\n    \"customerId\": \"{{customerId}}\",\n    \"kycStatus\": \"REJECTED\",\n    \"identityMatchStatus\": \"MATCH\",\n    \"identityMatchScore\": 0.991,\n    \"documentStatus\": \"ACTIVE\",\n    \"livenessStatus\": \"PASS\",\n    \"faceMatchStatus\": \"NO_MATCH\",\n    \"faceMatchScore\": 0.412,\n    \"dttotStatus\": \"CLEAR\",\n    \"pepStatus\": \"CLEAR\",\n    \"verifiedAt\": \"2026-08-26T10:15:00Z\",\n    \"referenceId\": \"KYC-REF-002\"\n  }\n}"
+            },
+            {
+              "name": "01 - KYC Verification \u2014 Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/kyc/verifications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "kyc",
+                    "verifications"
+                  ]
+                },
+                "description": "Melakukan verifikasi identitas customer (OCR, Dukcapil, e-KTP, Liveness, Face Match, DTTOT, PEP) sebelum customer dapat mengajukan loan.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"KTP\",\n  \"documentNumber\": \"3171234567890001\",\n  \"fullName\": \"Budi Santoso\",\n  \"birthPlace\": \"Jakarta\",\n  \"birthDate\": \"1995-08-20\",\n  \"documentImageRef\": \"FILE-123456\",\n  \"faceImageRef\": \"FACE-123456\",\n  \"consentFlag\": true,\n  \"deviceId\": \"DEV-12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"KYC-VAL-001\",\n    \"message\": \"consentFlag must be true\",\n    \"details\": {\n      \"field\": \"consentFlag\",\n      \"expected\": \"true\",\n      \"received\": false\n    },\n    \"correlationId\": \"{{correlationId}}\",\n    \"timestamp\": \"2026-08-26T11:15:00Z\"\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.kycVerificationId) {",
+                  "    pm.collectionVariables.set(\"kycVerificationId\", jsonData.data.kycVerificationId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Loan Application",
+      "item": [
+        {
+          "name": "02 - Create Loan Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/loan-applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-applications"
+              ]
+            },
+            "description": "Menyimpan data pengajuan loan setelah customer memiliki KYC berstatus VERIFIED.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"kycVerificationId\": \"{{kycVerificationId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"requestedAmount\": 25000000.0,\n  \"requestedTenor\": 12,\n  \"loanPurpose\": \"PERSONAL\",\n  \"currency\": \"IDR\",\n  \"employmentStatus\": \"EMPLOYEE\",\n  \"employerName\": \"PT ABC Indonesia\",\n  \"jobTitle\": \"Product Manager\",\n  \"employmentDurationMonth\": 48,\n  \"monthlyIncome\": 12000000.0,\n  \"monthlyExpense\": 5000000.0,\n  \"existingInstallment\": 1000000.0,\n  \"otherIncome\": 2000000.0,\n  \"totalMonthlyIncome\": 14000000.0,\n  \"bankCode\": \"014\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"Budi Santoso\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "02 - Create Loan Application \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications"
+                  ]
+                },
+                "description": "Menyimpan data pengajuan loan setelah customer memiliki KYC berstatus VERIFIED.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"kycVerificationId\": \"{{kycVerificationId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"requestedAmount\": 25000000.0,\n  \"requestedTenor\": 12,\n  \"loanPurpose\": \"PERSONAL\",\n  \"currency\": \"IDR\",\n  \"employmentStatus\": \"EMPLOYEE\",\n  \"employerName\": \"PT ABC Indonesia\",\n  \"jobTitle\": \"Product Manager\",\n  \"employmentDurationMonth\": 48,\n  \"monthlyIncome\": 12000000.0,\n  \"monthlyExpense\": 5000000.0,\n  \"existingInstallment\": 1000000.0,\n  \"otherIncome\": 2000000.0,\n  \"totalMonthlyIncome\": 14000000.0,\n  \"bankCode\": \"014\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"Budi Santoso\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"applicationId\": \"APP-000123\",\n  \"customerId\": \"{{customerId}}\",\n  \"status\": \"SUBMITTED\",\n  \"requestedAmount\": 25000000,\n  \"requestedTenor\": 12,\n  \"createdAt\": \"2026-08-26T10:20:00Z\",\n  \"correlationId\": \"{{correlationId}}\"\n}"
+            },
+            {
+              "name": "02 - Create Loan Application \u2014 KYC Not Verified",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications"
+                  ]
+                },
+                "description": "Menyimpan data pengajuan loan setelah customer memiliki KYC berstatus VERIFIED.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"kycVerificationId\": \"{{kycVerificationId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"requestedAmount\": 25000000.0,\n  \"requestedTenor\": 12,\n  \"loanPurpose\": \"PERSONAL\",\n  \"currency\": \"IDR\",\n  \"employmentStatus\": \"EMPLOYEE\",\n  \"employerName\": \"PT ABC Indonesia\",\n  \"jobTitle\": \"Product Manager\",\n  \"employmentDurationMonth\": 48,\n  \"monthlyIncome\": 12000000.0,\n  \"monthlyExpense\": 5000000.0,\n  \"existingInstallment\": 1000000.0,\n  \"otherIncome\": 2000000.0,\n  \"totalMonthlyIncome\": 14000000.0,\n  \"bankCode\": \"014\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"Budi Santoso\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"KYC-VAL-002\",\n    \"message\": \"KYC status is not VERIFIED\",\n    \"details\": {\n      \"field\": \"kycVerificationId\",\n      \"expected\": \"status = VERIFIED\",\n      \"received\": \"REJECTED\"\n    },\n    \"correlationId\": \"{{correlationId}}\",\n    \"timestamp\": \"2026-08-26T11:15:00Z\"\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.applicationId) { pm.collectionVariables.set(\"applicationId\", jsonData.applicationId); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Credit Assessment & Decision",
+      "item": [
+        {
+          "name": "03 - Loan Assessment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/assessment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-applications",
+                "{{applicationId}}",
+                "assessment"
+              ]
+            },
+            "description": "Trigger SOA untuk menjalankan credit verification (BPJS, SLIK, NPWP, PEP, DTTOT, Other Risk) terhadap application.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"assessmentType\": \"FULL_CREDIT_CHECK\",\n  \"consentId\": \"CONSENT-001\",\n  \"requestedAt\": \"2026-08-26T10:25:00Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "03 - Loan Assessment \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/assessment",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications",
+                    "{{applicationId}}",
+                    "assessment"
+                  ]
+                },
+                "description": "Trigger SOA untuk menjalankan credit verification (BPJS, SLIK, NPWP, PEP, DTTOT, Other Risk) terhadap application.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"assessmentType\": \"FULL_CREDIT_CHECK\",\n  \"consentId\": \"CONSENT-001\",\n  \"requestedAt\": \"2026-08-26T10:25:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"assessmentId\": \"ASM-000123\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"assessmentStatus\": \"COMPLETED\",\n  \"bpjsStatus\": \"VERIFIED\",\n  \"employmentDurationMonth\": 48,\n  \"verifiedMonthlyIncome\": 12000000,\n  \"slikStatus\": \"CLEAR\",\n  \"worstCollectibility\": 1,\n  \"totalOutstanding\": 5000000,\n  \"npwpStatus\": \"VALID\",\n  \"pepStatus\": \"CLEAR\",\n  \"dttotStatus\": \"CLEAR\",\n  \"overallAssessment\": \"PASS\",\n  \"completedAt\": \"2026-08-26T10:30:00Z\"\n}"
+            },
+            {
+              "name": "03 - Loan Assessment \u2014 SLIK Collectibility Fail",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/assessment",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications",
+                    "{{applicationId}}",
+                    "assessment"
+                  ]
+                },
+                "description": "Trigger SOA untuk menjalankan credit verification (BPJS, SLIK, NPWP, PEP, DTTOT, Other Risk) terhadap application.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"assessmentType\": \"FULL_CREDIT_CHECK\",\n  \"consentId\": \"CONSENT-001\",\n  \"requestedAt\": \"2026-08-26T10:25:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"assessmentId\": \"ASM-000123\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"assessmentStatus\": \"COMPLETED\",\n  \"bpjsStatus\": \"VERIFIED\",\n  \"employmentDurationMonth\": 48,\n  \"verifiedMonthlyIncome\": 12000000,\n  \"slikStatus\": \"CLEAR\",\n  \"totalOutstanding\": 5000000,\n  \"npwpStatus\": \"VALID\",\n  \"pepStatus\": \"CLEAR\",\n  \"dttotStatus\": \"CLEAR\",\n  \"completedAt\": \"2026-08-26T10:30:00Z\",\n  \"worstCollectibility\": 3,\n  \"overallAssessment\": \"FAIL\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.assessmentId) { pm.collectionVariables.set(\"assessmentId\", jsonData.assessmentId); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 - Credit Decision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/decision",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-applications",
+                "{{applicationId}}",
+                "decision"
+              ]
+            },
+            "description": "Digunakan oleh Credit Analyst untuk menyimpan keputusan akhir (APPROVED/REJECTED) terhadap suatu pengajuan.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"assessmentId\": \"{{assessmentId}}\",\n  \"analystId\": \"CA-00001\",\n  \"decision\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenor\": 12,\n  \"interestRate\": 12.5,\n  \"decisionReasonCode\": \"CREDIT_PASS\",\n  \"decisionNote\": \"Meets credit policy\",\n  \"decisionAt\": \"2026-08-26T11:00:00Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "04 - Credit Decision \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/decision",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications",
+                    "{{applicationId}}",
+                    "decision"
+                  ]
+                },
+                "description": "Digunakan oleh Credit Analyst untuk menyimpan keputusan akhir (APPROVED/REJECTED) terhadap suatu pengajuan.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"assessmentId\": \"{{assessmentId}}\",\n  \"analystId\": \"CA-00001\",\n  \"decision\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenor\": 12,\n  \"interestRate\": 12.5,\n  \"decisionReasonCode\": \"CREDIT_PASS\",\n  \"decisionNote\": \"Meets credit policy\",\n  \"decisionAt\": \"2026-08-26T11:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"status\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenor\": 12,\n  \"interestRate\": 12.5,\n  \"decisionReference\": \"DEC-000123\"\n}"
+            },
+            {
+              "name": "04 - Credit Decision \u2014 Rejected",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/decision",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications",
+                    "{{applicationId}}",
+                    "decision"
+                  ]
+                },
+                "description": "Digunakan oleh Credit Analyst untuk menyimpan keputusan akhir (APPROVED/REJECTED) terhadap suatu pengajuan.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"assessmentId\": \"{{assessmentId}}\",\n  \"analystId\": \"CA-00001\",\n  \"decision\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenor\": 12,\n  \"interestRate\": 12.5,\n  \"decisionReasonCode\": \"CREDIT_PASS\",\n  \"decisionNote\": \"Meets credit policy\",\n  \"decisionAt\": \"2026-08-26T11:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"status\": \"REJECTED\",\n  \"decisionReference\": \"DEC-000124\"\n}"
+            },
+            {
+              "name": "04 - Credit Decision \u2014 Validation Error - Missing Approved Fields",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loan-applications/{{applicationId}}/decision",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loan-applications",
+                    "{{applicationId}}",
+                    "decision"
+                  ]
+                },
+                "description": "Digunakan oleh Credit Analyst untuk menyimpan keputusan akhir (APPROVED/REJECTED) terhadap suatu pengajuan.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"assessmentId\": \"{{assessmentId}}\",\n  \"analystId\": \"CA-00001\",\n  \"decision\": \"APPROVED\",\n  \"approvedLimit\": 20000000,\n  \"approvedTenor\": 12,\n  \"interestRate\": 12.5,\n  \"decisionReasonCode\": \"CREDIT_PASS\",\n  \"decisionNote\": \"Meets credit policy\",\n  \"decisionAt\": \"2026-08-26T11:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"LOAN-VAL-002\",\n    \"message\": \"approvedLimit, approvedTenor and interestRate are mandatory when decision = APPROVED\",\n    \"details\": {\n      \"field\": \"approvedLimit\",\n      \"expected\": \"not null\",\n      \"received\": null\n    },\n    \"correlationId\": \"{{correlationId}}\",\n    \"timestamp\": \"2026-08-26T11:15:00Z\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Loan Booking",
+      "item": [
+        {
+          "name": "05 - Loan Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/loans",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loans"
+              ]
+            },
+            "description": "Membuat loan account di Core Banking (CBS) berdasarkan application yang sudah APPROVED. Wajib idempotencyKey.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"currency\": \"IDR\",\n  \"disbursementAccount\": \"1234567890\",\n  \"idempotencyKey\": \"BOOK-{{applicationId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "05 - Loan Booking \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loans",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loans"
+                  ]
+                },
+                "description": "Membuat loan account di Core Banking (CBS) berdasarkan application yang sudah APPROVED. Wajib idempotencyKey.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"currency\": \"IDR\",\n  \"disbursementAccount\": \"1234567890\",\n  \"idempotencyKey\": \"BOOK-{{applicationId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"loanAccountNumber\": \"889900123456\",\n  \"loanId\": \"LN-000123\",\n  \"bookingStatus\": \"SUCCESS\",\n  \"bookingReference\": \"CBS-BOOK-123\",\n  \"bookingDate\": \"2026-08-26T11:10:00Z\",\n  \"errorCode\": null,\n  \"errorMessage\": null\n}"
+            },
+            {
+              "name": "05 - Loan Booking \u2014 Exceeds Approved Limit",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loans",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loans"
+                  ]
+                },
+                "description": "Membuat loan account di Core Banking (CBS) berdasarkan application yang sudah APPROVED. Wajib idempotencyKey.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"currency\": \"IDR\",\n  \"disbursementAccount\": \"1234567890\",\n  \"idempotencyKey\": \"BOOK-{{applicationId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"LOAN-VAL-001\",\n    \"message\": \"Requested amount exceeds approved limit\",\n    \"details\": {\n      \"field\": \"loanAmount\",\n      \"expected\": \"<= 20000000\",\n      \"received\": 25000000\n    },\n    \"correlationId\": \"{{correlationId}}\",\n    \"timestamp\": \"2026-08-26T11:15:00Z\"\n  }\n}"
+            },
+            {
+              "name": "05 - Loan Booking \u2014 CBS Booking Failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/loans",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "loans"
+                  ]
+                },
+                "description": "Membuat loan account di Core Banking (CBS) berdasarkan application yang sudah APPROVED. Wajib idempotencyKey.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"loanProductCode\": \"PERSONAL01\",\n  \"loanAmount\": 15000000,\n  \"tenor\": 12,\n  \"interestRate\": 12.5,\n  \"currency\": \"IDR\",\n  \"disbursementAccount\": \"1234567890\",\n  \"idempotencyKey\": \"BOOK-{{applicationId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"loanAccountNumber\": null,\n  \"loanId\": null,\n  \"bookingStatus\": \"FAILED\",\n  \"bookingReference\": null,\n  \"bookingDate\": \"2026-08-26T11:10:00Z\",\n  \"errorCode\": \"CBS-500\",\n  \"errorMessage\": \"Core Banking service unavailable\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.loanId) { pm.collectionVariables.set(\"loanId\", jsonData.loanId); }",
+                  "if (jsonData.loanAccountNumber) { pm.collectionVariables.set(\"loanAccountNumber\", jsonData.loanAccountNumber); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Disbursement",
+      "item": [
+        {
+          "name": "06 - Disbursement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/disbursements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "disbursements"
+              ]
+            },
+            "description": "Memproses pencairan loan setelah validasi status, akun, dan idempotency. Response bersifat asynchronous (status PROCESSING), hasil akhir dikirim via callback.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"loanAccountNumber\": \"{{loanAccountNumber}}\",\n  \"disbursementAmount\": 15000000,\n  \"bankCode\": \"014\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"Budi Santoso\",\n  \"idempotencyKey\": \"DISB-{{loanId}}\",\n  \"requestedAt\": \"2026-08-26T11:15:00Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "06 - Disbursement \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/disbursements",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "disbursements"
+                  ]
+                },
+                "description": "Memproses pencairan loan setelah validasi status, akun, dan idempotency. Response bersifat asynchronous (status PROCESSING), hasil akhir dikirim via callback.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"loanAccountNumber\": \"{{loanAccountNumber}}\",\n  \"disbursementAmount\": 15000000,\n  \"bankCode\": \"014\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"Budi Santoso\",\n  \"idempotencyKey\": \"DISB-{{loanId}}\",\n  \"requestedAt\": \"2026-08-26T11:15:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"disbursementId\": \"DISB-000123\",\n  \"loanId\": \"{{loanId}}\",\n  \"amount\": 15000000,\n  \"status\": \"PROCESSING\",\n  \"transactionReference\": \"TRX-000123\",\n  \"requestedAt\": \"2026-08-26T11:15:00Z\",\n  \"estimatedCompletionTime\": \"2026-08-26T11:16:00Z\"\n}"
+            },
+            {
+              "name": "06 - Disbursement \u2014 Account Name Mismatch",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/disbursements",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "disbursements"
+                  ]
+                },
+                "description": "Memproses pencairan loan setelah validasi status, akun, dan idempotency. Response bersifat asynchronous (status PROCESSING), hasil akhir dikirim via callback.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"applicationId\": \"{{applicationId}}\",\n  \"loanAccountNumber\": \"{{loanAccountNumber}}\",\n  \"disbursementAmount\": 15000000,\n  \"bankCode\": \"014\",\n  \"accountNumber\": \"1234567890\",\n  \"accountName\": \"Budi Santoso\",\n  \"idempotencyKey\": \"DISB-{{loanId}}\",\n  \"requestedAt\": \"2026-08-26T11:15:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"DISB-VAL-001\",\n    \"message\": \"Account name does not match customer name\",\n    \"details\": {\n      \"field\": \"accountName\",\n      \"expected\": \"Budi Santoso\",\n      \"received\": \"Budi S.\"\n    },\n    \"correlationId\": \"{{correlationId}}\",\n    \"timestamp\": \"2026-08-26T11:15:00Z\"\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.disbursementId) { pm.collectionVariables.set(\"disbursementId\", jsonData.disbursementId); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 - Disbursement Callback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Request-ID",
+                "value": "{{requestId}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Channel",
+                "value": "MOBILE",
+                "type": "text"
+              },
+              {
+                "key": "X-Client-Version",
+                "value": "6.2.1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/disbursements/{{disbursementId}}/callback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "disbursements",
+                "{{disbursementId}}",
+                "callback"
+              ]
+            },
+            "description": "Menerima hasil akhir transaksi disbursement secara asynchronous dari Core Banking / payment gateway.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"loanId\": \"{{loanId}}\",\n  \"transactionReference\": \"TRX-000123\",\n  \"status\": \"SUCCESS\",\n  \"transactionDate\": \"2026-08-26T11:16:30Z\",\n  \"amount\": 15000000,\n  \"failureCode\": null,\n  \"failureReason\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "07 - Disbursement Callback \u2014 Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/disbursements/{{disbursementId}}/callback",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "disbursements",
+                    "{{disbursementId}}",
+                    "callback"
+                  ]
+                },
+                "description": "Menerima hasil akhir transaksi disbursement secara asynchronous dari Core Banking / payment gateway.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"loanId\": \"{{loanId}}\",\n  \"transactionReference\": \"TRX-000123\",\n  \"status\": \"SUCCESS\",\n  \"transactionDate\": \"2026-08-26T11:16:30Z\",\n  \"amount\": 15000000,\n  \"failureCode\": null,\n  \"failureReason\": null\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Callback processed\",\n  \"loanStatus\": \"ACTIVE\"\n}"
+            },
+            {
+              "name": "07 - Disbursement Callback \u2014 Failed Disbursement",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Correlation-ID",
+                    "value": "{{correlationId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Request-ID",
+                    "value": "{{requestId}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Channel",
+                    "value": "MOBILE",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Client-Version",
+                    "value": "6.2.1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/disbursements/{{disbursementId}}/callback",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "disbursements",
+                    "{{disbursementId}}",
+                    "callback"
+                  ]
+                },
+                "description": "Menerima hasil akhir transaksi disbursement secara asynchronous dari Core Banking / payment gateway.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"loanId\": \"{{loanId}}\",\n  \"transactionReference\": \"TRX-000123\",\n  \"status\": \"SUCCESS\",\n  \"transactionDate\": \"2026-08-26T11:16:30Z\",\n  \"amount\": 15000000,\n  \"failureCode\": null,\n  \"failureReason\": null\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"disbursementId\": \"{{disbursementId}}\",\n  \"loanId\": \"{{loanId}}\",\n  \"transactionReference\": \"TRX-000124\",\n  \"status\": \"FAILED\",\n  \"transactionDate\": \"2026-08-26T11:16:30Z\",\n  \"amount\": 15000000,\n  \"failureCode\": \"CBS-timeout\",\n  \"failureReason\": \"Connection timeout to destination bank\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
